@@ -1,12 +1,15 @@
-import { useState } from 'react' 
+import { useState } from 'react'
+import { loginWithEmail, loginWithGoogle } from '../../services/authService'
+import LoadingScreen from '../ui/LoadingScreen' 
 
-function Login() {
+function Login({ onViewChange }) {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
     rememberMe: false
   })
   const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState('')
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target
@@ -19,9 +22,32 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setIsLoading(true)
-    // TODO: Implementar lógica de autenticación
-    console.log('Login data:', formData)
-    setTimeout(() => setIsLoading(false), 1000) // Simulación
+    setError('')
+    
+    const result = await loginWithEmail(formData.email, formData.password)
+    
+    if (!result.success) {
+      setError('Credenciales incorrectas. Verifica tu email y contraseña.')
+      setIsLoading(false)
+    }
+    // Si es exitoso, mantener loading hasta que AuthContext redirija
+  }
+
+  const handleGoogleLogin = async () => {
+    setIsLoading(true)
+    setError('')
+    
+    const result = await loginWithGoogle()
+    
+    if (!result.success) {
+      setError('Error al iniciar sesión con Google.')
+      setIsLoading(false)
+    }
+    // Si es exitoso, mantener loading hasta que AuthContext redirija
+  }
+
+  if (isLoading) {
+    return <LoadingScreen />
   }
 
   return (
@@ -38,6 +64,11 @@ function Login() {
 
         {/* Formulario */}
         <div className="bg-white rounded-3xl shadow-xl p-8 border border-gray-100">
+          {error && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+              {error}
+            </div>
+          )}
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Email */}
             <div className="space-y-2">
@@ -136,9 +167,27 @@ function Login() {
             </div>
           </div>
 
+          {/* Email Link Login */}
+          <div className="mt-6">
+            <button 
+              type="button"
+              onClick={() => onViewChange('email-login')}
+              className="w-full inline-flex justify-center py-2.5 px-4 border border-blue-300 rounded-xl shadow-sm bg-blue-50 text-sm font-medium text-blue-700 hover:bg-blue-100 transition-colors duration-200"
+            >
+              <svg className="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              Acceso por email
+            </button>
+          </div>
+
           {/* Social Login */}
           <div className="mt-6 grid grid-cols-2 gap-3">
-            <button className="w-full inline-flex justify-center py-2.5 px-4 border border-gray-300 rounded-xl shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 transition-colors duration-200">
+            <button 
+              type="button"
+              onClick={handleGoogleLogin}
+              disabled={isLoading}
+              className="w-full inline-flex justify-center py-2.5 px-4 border border-gray-300 rounded-xl shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 transition-colors duration-200 disabled:opacity-50">
               <svg className="h-5 w-5" viewBox="0 0 24 24">
                 <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                 <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -159,9 +208,12 @@ function Login() {
         {/* Sign Up Link */}
         <p className="mt-8 text-center text-sm text-gray-600">
           ¿No tienes una cuenta?{' '}
-          <a href="/signup" className="font-medium text-blue-600 hover:text-blue-500 transition-colors duration-200">
+          <button 
+            onClick={() => onViewChange('register')}
+            className="font-medium text-blue-600 hover:text-blue-500 transition-colors duration-200"
+          >
             Regístrate aquí
-          </a>
+          </button>
         </p>
       </div>
     </div>

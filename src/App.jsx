@@ -1,8 +1,11 @@
-import Login from './components/auth/login'
+import { AuthProvider } from './context/AuthContext'
+import AppRouter from './routes/AppRouter'
 
 function App() {
   return (
-    <Login />
+    <AuthProvider>
+      <AppRouter />
+    </AuthProvider>
   )
 }
 
