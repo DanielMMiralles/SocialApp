@@ -5,25 +5,25 @@
 ### 1. 👤 Usuarios y Autenticación
 
 #### Registro de Usuario
-- **Formulario de registro** con campos:
+✅ **Formulario de registro** con campos:
   - Email (validación de formato)
   - Nombre de usuario (único)
   - Contraseña (validación de seguridad)
-- **Validaciones**:
+✅ **Validaciones**:
   - Formato de email válido
   - Contraseña segura (mínimo 8 caracteres, mayúsculas, números)
   - Verificación de usuario único
 
 #### Inicio de Sesión
-- **Autenticación** con email/contraseña
-- **Opción "Recuérdame"** para sesiones persistentes
-- **Manejo de errores** de credenciales incorrectas
+✅ **Autenticación** con email/contraseña
+✅ **Opción "Recuérdame"** para sesiones persistentes
+✅ **Manejo de errores** de credenciales incorrectas
 
 #### Gestión de Perfil
-- **Editar foto de perfil** (subida y recorte de imagen)
-- **Actualizar biografía/descripción** (máximo 160 caracteres)
-- **Cambiar contraseña** con validación de contraseña actual
-- **Cerrar sesión**
+✅ **Editar foto de perfil** (subida y recorte de imagen)
+✅ **Actualizar biografía/descripción** (máximo 160 caracteres)
+✅ **Cambiar contraseña** con validación de contraseña actual
+✅ **Cerrar sesión**
 
 ---
 

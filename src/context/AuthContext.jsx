@@ -41,10 +41,25 @@ export const AuthProvider = ({ children }) => {
     return unsubscribe
   }, [])
 
+  const refreshProfile = async () => {
+    if (user) {
+      try {
+        const docRef = doc(db, 'users', user.uid)
+        const docSnap = await getDoc(docRef)
+        if (docSnap.exists()) {
+          setUserProfile(docSnap.data())
+        }
+      } catch (error) {
+        console.error('Error refrescando perfil:', error)
+      }
+    }
+  }
+
   const value = {
     user,
     userProfile,
-    loading
+    loading,
+    refreshProfile
   }
 
   return (

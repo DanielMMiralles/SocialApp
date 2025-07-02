@@ -2,10 +2,12 @@ import { useAuth } from '../context/AuthContext'
 import { logout } from '../services/authService'
 import { useState } from 'react'
 import LoadingScreen from '../components/ui/LoadingScreen'
+import Profile from './Profile'
 
 function Dashboard() {
   const { user, userProfile } = useAuth()
   const [isLoggingOut, setIsLoggingOut] = useState(false)
+  const [currentView, setCurrentView] = useState('dashboard')
 
   const handleLogout = async () => {
     setIsLoggingOut(true)
@@ -15,6 +17,10 @@ function Dashboard() {
 
   if (isLoggingOut) {
     return <LoadingScreen />
+  }
+
+  if (currentView === 'profile') {
+    return <Profile onBack={() => setCurrentView('dashboard')} />
   }
 
   return (
@@ -34,15 +40,31 @@ function Dashboard() {
               </div>
             </div>
             
-            <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-700">
-                Hola, {userProfile?.displayName || user?.email}
-              </span>
+            <div className="flex items-center space-x-3">
+              {/* Botón de perfil minimalista */}
+              <button 
+                onClick={() => setCurrentView('profile')}
+                className="flex items-center space-x-2 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 rounded-xl p-2 transition-all duration-200 hover:shadow-md hover:scale-105"
+              >
+                <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center text-white font-semibold text-sm">
+                  {userProfile?.displayName?.charAt(0)?.toUpperCase() || user?.email?.charAt(0)?.toUpperCase()}
+                </div>
+                <div className="hidden sm:block text-left">
+                  <div className="text-sm font-medium text-gray-900">
+                    {userProfile?.displayName || user?.email}
+                  </div>
+                </div>
+              </button>
+              
+              {/* Botón de cerrar sesión más discreto */}
               <button
                 onClick={handleLogout}
-                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200"
+                className="p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-colors duration-200"
+                title="Cerrar Sesión"
               >
-                Cerrar Sesión
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
               </button>
             </div>
           </div>
@@ -57,7 +79,7 @@ function Dashboard() {
               ¡Bienvenido a CrossLine!
             </h2>
             <p className="text-lg text-gray-600 mb-8">
-              Tu red social está lista. Próximamente: sistema de publicaciones, feed y más funcionalidades.
+              CrossLine está lista. Próximamente: sistema de publicaciones, feed y más funcionalidades.
             </p>
             
             {/* Placeholder para futuras funcionalidades */}
