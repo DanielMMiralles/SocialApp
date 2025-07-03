@@ -30,19 +30,19 @@
 ### 2. 📝 Publicaciones (Funcionalidad Principal)
 
 #### Creación de Publicaciones
-- **Editor de texto** con límite de 500 caracteres
-- **Soporte para imágenes** (1 imagen por publicación)
-- **Vista previa** antes de publicar
-- **Botón de publicación** con confirmación
+✅ **Editor de texto** con límite de 500 caracteres
+✅ **Soporte para imágenes** (1 imagen por publicación)
+✅ **Vista previa** antes de publicar
+✅ **Botón de publicación** con confirmación
 
 #### Visualización del Feed
-- **Feed cronológico inverso** (publicaciones más recientes primero)
-- **Información mostrada**:
-  - Avatar del usuario
-  - Nombre de usuario
-  - Timestamp (tiempo transcurrido)
-  - Contenido de texto
-  - Imagen (si existe)
+✅ **Feed cronológico inverso** (publicaciones más recientes primero)
+✅ **Información mostrada**:
+  ✅ Avatar del usuario
+  ✅ Nombre de usuario
+  ✅ Timestamp (tiempo transcurrido)
+  ✅ Contenido de texto
+  ✅ Imagen (si existe)
 
 #### Interacciones
 - **Sistema de Likes** ❤️
