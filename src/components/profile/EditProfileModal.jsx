@@ -8,7 +8,8 @@ function EditProfileModal({ isOpen, onClose, profileData, onSave }) {
   const [formData, setFormData] = useState({
     displayName: profileData.displayName || '',
     bio: profileData.bio || '',
-    profilePicture: profileData.profilePicture || ''
+    profilePicture: profileData.profilePicture || '',
+    coverImage: profileData.coverImage || ''
   })
   const [isLoading, setIsLoading] = useState(false)
   const [previewImage, setPreviewImage] = useState(profileData.profilePicture || '')
@@ -77,6 +78,7 @@ function EditProfileModal({ isOpen, onClose, profileData, onSave }) {
         displayName: formData.displayName,
         bio: formData.bio,
         profilePicture: previewImage,
+        coverImage: formData.coverImage, // Mantener imagen de portada
         updatedAt: new Date()
       }
       

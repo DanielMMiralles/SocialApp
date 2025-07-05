@@ -1,48 +1,46 @@
 import { useState } from 'react'
 import { useAuth } from '../../context/AuthContext'
+import { useTimeAgo } from '../../hooks/useTimeAgo'
 
 function PostCard({ post, onLike, onDelete }) {
   const { user } = useAuth()
+  const { getTimeAgo } = useTimeAgo()
   const [showComments, setShowComments] = useState(false)
-  
-  // Función para calcular tiempo transcurrido
-  const getTimeAgo = (timestamp) => {
-    const now = new Date()
-    const postTime = new Date(timestamp)
-    const diffInMinutes = Math.floor((now - postTime) / (1000 * 60))
-    
-    if (diffInMinutes < 1) return 'Ahora'
-    if (diffInMinutes < 60) return `${diffInMinutes}m`
-    if (diffInMinutes < 1440) return `${Math.floor(diffInMinutes / 60)}h`
-    return `${Math.floor(diffInMinutes / 1440)}d`
-  }
 
   const isLiked = post.likes.includes(user?.uid)
   const isOwner = post.userId === user?.uid
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow duration-200">
+    <div className="group relative bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-2xl hover:border-purple-200 transition-all duration-300 transform hover:-translate-y-1">
+      {/* Gradiente decorativo superior */}
+      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
       {/* Header del post */}
-      <div className="p-4 pb-3">
+      <div className="p-6 pb-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl flex items-center justify-center text-white font-semibold overflow-hidden">
-              {post.userAvatar ? (
-                <img 
-                  src={post.userAvatar} 
-                  alt={post.userDisplayName} 
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                post.userDisplayName?.charAt(0)?.toUpperCase() || '?'
-              )}
+            <div className="relative w-14 h-14 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center text-white font-semibold overflow-hidden shadow-lg group-hover:shadow-xl transition-shadow duration-300">
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-purple-400 rounded-2xl blur opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
+              <div className="relative z-10">
+                {post.userAvatar ? (
+                  <img 
+                    src={post.userAvatar} 
+                    alt={post.userDisplayName} 
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <span className="text-lg font-bold">
+                    {post.userDisplayName?.charAt(0)?.toUpperCase() || '?'}
+                  </span>
+                )}
+              </div>
             </div>
             <div>
-              <div className="font-semibold text-gray-900 hover:text-blue-600 cursor-pointer transition-colors">
+              <div className="font-bold text-gray-900 hover:text-transparent hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600 hover:bg-clip-text cursor-pointer transition-all duration-200">
                 {post.userDisplayName}
               </div>
-              <div className="text-sm text-gray-500">
-                {getTimeAgo(post.timestamp)}
+              <div className="text-sm text-gray-500 flex items-center space-x-1">
+                <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
+                <span>{getTimeAgo(post.timestamp)}</span>
               </div>
             </div>
           </div>
@@ -65,7 +63,7 @@ function PostCard({ post, onLike, onDelete }) {
       </div>
 
       {/* Contenido del post */}
-      <div className="px-4 pb-3">
+      <div className="px-6 pb-4">
         {post.content && (
           <p className="text-gray-800 leading-relaxed whitespace-pre-wrap">
             {post.content}
@@ -75,26 +73,29 @@ function PostCard({ post, onLike, onDelete }) {
 
       {/* Imagen del post */}
       {post.image && (
-        <div className="px-4 pb-3">
-          <img
-            src={post.image}
-            alt="Post content"
-            className="w-full rounded-xl object-cover max-h-96"
-          />
+        <div className="px-6 pb-4">
+          <div className="relative overflow-hidden rounded-2xl group-hover:rounded-3xl transition-all duration-300">
+            <img
+              src={post.image}
+              alt="Post content"
+              className="w-full object-cover max-h-96 group-hover:scale-105 transition-transform duration-300"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          </div>
         </div>
       )}
 
       {/* Botones de interacción */}
-      <div className="px-4 py-3 border-t border-gray-50">
+      <div className="px-6 py-4 border-t border-gray-50 bg-gray-50/50">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-6">
             {/* Botón de like */}
             <button
               onClick={() => onLike(post.id)}
-              className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all ${
+              className={`flex items-center space-x-2 px-4 py-2 rounded-2xl transition-all duration-200 transform hover:scale-105 ${
                 isLiked 
-                  ? 'text-red-500 bg-red-50 hover:bg-red-100' 
-                  : 'text-gray-500 hover:text-red-500 hover:bg-red-50'
+                  ? 'text-red-500 bg-red-50 hover:bg-red-100 shadow-md' 
+                  : 'text-gray-500 hover:text-red-500 hover:bg-red-50 hover:shadow-md'
               }`}
             >
               <svg 
@@ -113,7 +114,7 @@ function PostCard({ post, onLike, onDelete }) {
             {/* Botón de comentarios */}
             <button
               onClick={() => setShowComments(!showComments)}
-              className="flex items-center space-x-2 px-3 py-2 rounded-lg text-gray-500 hover:text-blue-500 hover:bg-blue-50 transition-all"
+              className="flex items-center space-x-2 px-4 py-2 rounded-2xl text-gray-500 hover:text-blue-500 hover:bg-blue-50 hover:shadow-md transition-all duration-200 transform hover:scale-105"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
@@ -125,7 +126,7 @@ function PostCard({ post, onLike, onDelete }) {
           </div>
 
           {/* Botón compartir */}
-          <button className="flex items-center space-x-2 px-3 py-2 rounded-lg text-gray-500 hover:text-green-500 hover:bg-green-50 transition-all">
+          <button className="flex items-center space-x-2 px-4 py-2 rounded-2xl text-gray-500 hover:text-green-500 hover:bg-green-50 hover:shadow-md transition-all duration-200 transform hover:scale-105">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
             </svg>

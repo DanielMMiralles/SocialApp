@@ -82,31 +82,53 @@ function Dashboard() {
       {/* Main Content */}
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 py-6 sm:px-0">
-          {/* Header del feed */}
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-2">
-                Tu Feed
-              </h2>
-              <p className="text-gray-600">
-                Descubre lo que está pasando en tu comunidad
-              </p>
+          {/* Header del feed mejorado */}
+          <div className="text-center mb-12">
+            <div className="relative">
+              <h1 className="text-5xl font-extrabold mb-4">
+                <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                  Tu Feed
+                </span>
+              </h1>
+              <div className="absolute -top-2 -left-2 w-4 h-4 bg-blue-400 rounded-full animate-pulse opacity-60"></div>
+              <div className="absolute -top-1 -right-4 w-3 h-3 bg-purple-400 rounded-full animate-pulse opacity-40"></div>
+              <div className="absolute -bottom-1 left-8 w-2 h-2 bg-pink-400 rounded-full animate-pulse opacity-50"></div>
             </div>
             
-            {/* Botón para crear publicación */}
-            <button
-              onClick={() => setIsCreatePostOpen(true)}
-              className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-2xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all transform hover:scale-105 shadow-lg flex items-center space-x-2"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-              </svg>
-              <span>Nueva Publicación</span>
-            </button>
+            <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed">
+              🌟 Descubre, conecta y comparte momentos increíbles con tu comunidad
+            </p>
+            
+            {/* Botón flotante mejorado */}
+            <div className="relative inline-block">
+              <button
+                onClick={() => setIsCreatePostOpen(true)}
+                className="group relative bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white px-8 py-4 rounded-3xl font-bold text-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-110 hover:-translate-y-1"
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 rounded-3xl blur opacity-30 group-hover:opacity-60 transition-opacity duration-300"></div>
+                <div className="relative flex items-center space-x-3">
+                  <div className="p-1 bg-white/20 rounded-full">
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    </svg>
+                  </div>
+                  <span>Crear Publicación</span>
+                  <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+                </div>
+              </button>
+              
+              {/* Partículas decorativas */}
+              <div className="absolute -top-3 -right-3 w-6 h-6 border-2 border-purple-300 rounded-full animate-spin opacity-60"></div>
+              <div className="absolute -bottom-2 -left-2 w-4 h-4 border-2 border-blue-300 rounded-full animate-bounce opacity-40"></div>
+            </div>
           </div>
           
-          {/* Feed de publicaciones */}
-          <div className="max-w-2xl mx-auto">
+          {/* Feed de publicaciones con contenedor mejorado */}
+          <div className="max-w-2xl mx-auto relative">
+            {/* Decoración de fondo */}
+            <div className="absolute -top-10 -left-10 w-20 h-20 bg-gradient-to-r from-blue-100 to-purple-100 rounded-full opacity-50 blur-xl"></div>
+            <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-gradient-to-r from-purple-100 to-pink-100 rounded-full opacity-30 blur-2xl"></div>
+            
             <Feed newPosts={posts} />
           </div>
         </div>
