@@ -1,7 +1,9 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import LoadingScreen from '../ui/LoadingScreen'
 
 function ChangePasswordModal({ isOpen, onClose }) {
+  const [isVisible, setIsVisible] = useState(false)
+  const [isAnimating, setIsAnimating] = useState(false)
   const [formData, setFormData] = useState({
     currentPassword: '',
     newPassword: '',
@@ -10,6 +12,16 @@ function ChangePasswordModal({ isOpen, onClose }) {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
+
+  useEffect(() => {
+    if (isOpen) {
+      setIsVisible(true)
+      setTimeout(() => setIsAnimating(true), 10)
+    } else {
+      setIsAnimating(false)
+      setTimeout(() => setIsVisible(false), 300)
+    }
+  }, [isOpen])
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -52,7 +64,7 @@ function ChangePasswordModal({ isOpen, onClose }) {
     }, 1500)
   }
 
-  if (!isOpen) return null
+  if (!isVisible) return null
 
   if (isLoading) {
     return <LoadingScreen />
@@ -60,8 +72,12 @@ function ChangePasswordModal({ isOpen, onClose }) {
 
   if (success) {
     return (
-      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-        <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md p-8 text-center">
+      <div className={`fixed inset-0 flex items-center justify-center p-4 z-50 transition-all duration-300 ${
+        isAnimating ? 'bg-black/50 backdrop-blur-sm' : 'bg-black/0'
+      }`}>
+        <div className={`bg-white rounded-3xl shadow-2xl w-full max-w-md p-8 text-center transform transition-all duration-300 ${
+          isAnimating ? 'scale-100 opacity-100 translate-y-0' : 'scale-95 opacity-0 translate-y-8'
+        }`}>
           <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -75,8 +91,12 @@ function ChangePasswordModal({ isOpen, onClose }) {
   }
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md">
+    <div className={`fixed inset-0 flex items-center justify-center p-4 z-50 transition-all duration-300 ${
+      isAnimating ? 'bg-black/50 backdrop-blur-sm' : 'bg-black/0'
+    }`}>
+      <div className={`bg-white rounded-3xl shadow-2xl w-full max-w-md transform transition-all duration-300 ${
+        isAnimating ? 'scale-100 opacity-100 translate-y-0' : 'scale-95 opacity-0 translate-y-8'
+      }`}>
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
           <h2 className="text-xl font-bold text-gray-900">Cambiar Contraseña</h2>
           <button

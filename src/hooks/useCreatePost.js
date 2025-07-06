@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
+import { useHashtags } from './useHashtags'
 
 export const useCreatePost = (onPostCreated) => {
   const { user, userProfile } = useAuth()
+  const { extractHashtags, updateHashtagCounts } = useHashtags()
   const [postData, setPostData] = useState({
     content: '',
     image: null
@@ -64,16 +66,24 @@ export const useCreatePost = (onPostCreated) => {
     setIsLoading(true)
     
     try {
+      const hashtags = extractHashtags(postData.content)
+      
       const newPost = {
         id: Date.now().toString(),
         userId: user.uid,
         userDisplayName: userProfile?.displayName || user.email,
         userAvatar: userProfile?.profilePicture || '',
         content: postData.content.trim(),
+        hashtags: hashtags,
         image: postData.image,
         timestamp: new Date().toISOString(),
         likes: [],
         comments: []
+      }
+      
+      // Actualizar contadores de hashtags
+      if (hashtags.length > 0) {
+        updateHashtagCounts(hashtags)
       }
 
       const existingPosts = JSON.parse(localStorage.getItem('posts') || '[]')

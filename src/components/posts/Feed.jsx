@@ -1,9 +1,28 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { usePosts } from '../../hooks/usePosts'
+import { useFeedFilter } from '../../context/FeedContext'
 import PostCard from './PostCard'
 
 function Feed({ newPosts = [] }) {
   const { posts, loading, addPost, toggleLike, deletePost } = usePosts()
+  const { showFollowingOnly } = useFeedFilter()
+  const [isTransitioning, setIsTransitioning] = useState(false)
+  const [displayPosts, setDisplayPosts] = useState(posts)
+
+  // Manejar transiciones suaves al cambiar filtro
+  useEffect(() => {
+    if (displayPosts.length > 0 && posts.length !== displayPosts.length) {
+      setIsTransitioning(true)
+      
+      // Fade out
+      setTimeout(() => {
+        setDisplayPosts(posts)
+        setIsTransitioning(false)
+      }, 200)
+    } else {
+      setDisplayPosts(posts)
+    }
+  }, [posts])
 
   useEffect(() => {
     if (newPosts.length > 0) {
@@ -41,27 +60,38 @@ function Feed({ newPosts = [] }) {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9.5a2.5 2.5 0 00-2.5-2.5H15" />
           </svg>
         </div>
-        <h3 className="text-xl font-semibold text-gray-900 mb-2">No hay publicaciones aún</h3>
-        <p className="text-gray-600 mb-6">¡Sé el primero en compartir algo increíble!</p>
+        <h3 className="text-xl font-semibold text-gray-900 mb-2">
+          {showFollowingOnly ? 'No hay publicaciones de usuarios seguidos' : 'No hay publicaciones aún'}
+        </h3>
+        <p className="text-gray-600 mb-6">
+          {showFollowingOnly 
+            ? '¡Sigue a otros usuarios para ver sus publicaciones aquí!' 
+            : '¡Sé el primero en compartir algo increíble!'}
+        </p>
       </div>
     )
   }
 
   return (
-    <div className="space-y-8">
-      {posts.map((post, index) => (
-        <div 
-          key={post.id} 
-          className="animate-fade-in-up"
-          style={{ animationDelay: `${index * 100}ms` }}
-        >
-          <PostCard
-            post={post}
-            onLike={toggleLike}
-            onDelete={deletePost}
-          />
-        </div>
-      ))}
+    <div className="relative">
+      {isTransitioning && (
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent animate-pulse rounded-3xl z-10 pointer-events-none"></div>
+      )}
+      <div className={`space-y-8 transition-all duration-300 ${isTransitioning ? 'opacity-60 scale-98' : 'opacity-100 scale-100'}`}>
+        {displayPosts.map((post, index) => (
+          <div 
+            key={`${post.id}-${showFollowingOnly}`}
+            className={`transition-all duration-300 ${isTransitioning ? '' : 'animate-fade-in-up'}`}
+            style={{ animationDelay: isTransitioning ? '0ms' : `${index * 50}ms` }}
+          >
+            <PostCard
+              post={post}
+              onLike={toggleLike}
+              onDelete={deletePost}
+            />
+          </div>
+        ))}
+      </div>
       
       {/* Indicador de final del feed mejorado */}
       <div className="text-center py-12">

@@ -2,15 +2,23 @@ import { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { logout } from '../services/authService'
 import { getUserProfileData } from '../services/profileService'
+import { useFollowing } from '../hooks/useFollowing'
 import LoadingScreen from '../components/ui/LoadingScreen'
 import EditProfileModal from '../components/profile/EditProfileModal'
 import ChangePasswordModal from '../components/profile/ChangePasswordModal'
+import FollowButton from '../components/ui/FollowButton'
+import HashtagText from '../components/ui/HashtagText'
 
-function Profile({ onBack }) {
+function Profile({ onBack, viewingUserId = null }) {
   const { user, userProfile } = useAuth()
+  const { getFollowersCount, getFollowingCount } = useFollowing()
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false)
   const [isLoggingOut, setIsLoggingOut] = useState(false)
+  
+  // Determinar si estamos viendo nuestro perfil o el de otro usuario
+  const isOwnProfile = !viewingUserId || viewingUserId === user?.uid
+  const currentUserId = viewingUserId || user?.uid
   const [profileData, setProfileData] = useState(() => {
     // Intentar cargar desde localStorage al inicializar
     if (user?.uid) {
@@ -219,12 +227,16 @@ function Profile({ onBack }) {
                 </div>
               </div>
 
-              <button
-                onClick={() => setIsEditModalOpen(true)}
-                className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-2xl font-medium hover:from-blue-700 hover:to-purple-700 transition-all transform hover:scale-105"
-              >
-                Editar Perfil
-              </button>
+              {isOwnProfile ? (
+                <button
+                  onClick={() => setIsEditModalOpen(true)}
+                  className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-2xl font-medium hover:from-blue-700 hover:to-purple-700 transition-all transform hover:scale-105"
+                >
+                  Editar Perfil
+                </button>
+              ) : (
+                <FollowButton targetUserId={currentUserId} size="large" />
+              )}
             </div>
 
             {/* Información personal */}
@@ -242,9 +254,13 @@ function Profile({ onBack }) {
               </div>
 
               <div>
-                <p className="text-gray-700 text-lg leading-relaxed">
-                  {profileData.bio || 'Aún no has agregado una biografía. ¡Cuéntanos sobre ti!'}
-                </p>
+                <div className="text-gray-700 text-lg leading-relaxed">
+                  {profileData.bio ? (
+                    <HashtagText text={profileData.bio} />
+                  ) : (
+                    <span>Aún no has agregado una biografía. ¡Cuéntanos sobre ti!</span>
+                  )}
+                </div>
               </div>
 
               {/* Estadísticas */}
@@ -254,11 +270,11 @@ function Profile({ onBack }) {
                   <div className="text-gray-600 text-sm">Publicaciones</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-gray-900">0</div>
+                  <div className="text-2xl font-bold text-gray-900">{getFollowersCount(currentUserId)}</div>
                   <div className="text-gray-600 text-sm">Seguidores</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-gray-900">0</div>
+                  <div className="text-2xl font-bold text-gray-900">{getFollowingCount(currentUserId)}</div>
                   <div className="text-gray-600 text-sm">Siguiendo</div>
                 </div>
               </div>

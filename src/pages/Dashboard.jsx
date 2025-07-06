@@ -5,6 +5,9 @@ import LoadingScreen from '../components/ui/LoadingScreen'
 import Profile from './Profile'
 import CreatePostModal from '../components/posts/CreatePostModal'
 import Feed from '../components/posts/Feed'
+import FeedFilter from '../components/posts/FeedFilter'
+import TrendingHashtags from '../components/ui/TrendingHashtags'
+import { FeedProvider } from '../context/FeedContext'
 
 function Dashboard() {
   const { user, userProfile } = useAuth()
@@ -32,7 +35,8 @@ function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <FeedProvider>
+      <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <header className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -123,13 +127,58 @@ function Dashboard() {
             </div>
           </div>
           
-          {/* Feed de publicaciones con contenedor mejorado */}
-          <div className="max-w-2xl mx-auto relative">
-            {/* Decoración de fondo */}
-            <div className="absolute -top-10 -left-10 w-20 h-20 bg-gradient-to-r from-blue-100 to-purple-100 rounded-full opacity-50 blur-xl"></div>
-            <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-gradient-to-r from-purple-100 to-pink-100 rounded-full opacity-30 blur-2xl"></div>
-            
-            <Feed newPosts={posts} />
+          {/* Layout del feed con filtro lateral */}
+          <div className="max-w-6xl mx-auto relative">
+            <div className="flex gap-6">
+              {/* Feed principal */}
+              <div className="flex-1 max-w-2xl mx-auto relative">
+                {/* Decoración de fondo */}
+                <div className="absolute -top-10 -left-10 w-20 h-20 bg-gradient-to-r from-blue-100 to-purple-100 rounded-full opacity-50 blur-xl"></div>
+                <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-gradient-to-r from-purple-100 to-pink-100 rounded-full opacity-30 blur-2xl"></div>
+                
+                <Feed newPosts={posts} />
+              </div>
+              
+              {/* Sidebar con filtro */}
+              <div className="hidden lg:block w-80 space-y-6">
+                <FeedFilter />
+                
+                {/* Sugerencias de usuarios (placeholder) */}
+                <div className="bg-white/80 backdrop-blur-sm border border-gray-200 rounded-2xl p-4 shadow-sm">
+                  <h3 className="font-semibold text-gray-900 text-sm mb-3">Sugerencias para ti</h3>
+                  <div className="space-y-3">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-8 h-8 bg-gradient-to-r from-green-400 to-blue-500 rounded-lg flex items-center justify-center text-white text-xs font-semibold">
+                        A
+                      </div>
+                      <div className="flex-1">
+                        <div className="text-sm font-medium text-gray-900">Ana García</div>
+                        <div className="text-xs text-gray-500">Sugerido para ti</div>
+                      </div>
+                      <button className="px-3 py-1 bg-blue-600 text-white text-xs rounded-lg hover:bg-blue-700 transition-colors">
+                        Seguir
+                      </button>
+                    </div>
+                    
+                    <div className="flex items-center space-x-3">
+                      <div className="w-8 h-8 bg-gradient-to-r from-purple-400 to-pink-500 rounded-lg flex items-center justify-center text-white text-xs font-semibold">
+                        M
+                      </div>
+                      <div className="flex-1">
+                        <div className="text-sm font-medium text-gray-900">Miguel Torres</div>
+                        <div className="text-xs text-gray-500">Sugerido para ti</div>
+                      </div>
+                      <button className="px-3 py-1 bg-blue-600 text-white text-xs rounded-lg hover:bg-blue-700 transition-colors">
+                        Seguir
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Tendencias dinámicas */}
+                <TrendingHashtags />
+              </div>
+            </div>
           </div>
         </div>
       </main>
@@ -140,7 +189,8 @@ function Dashboard() {
         onClose={() => setIsCreatePostOpen(false)}
         onPostCreated={handlePostCreated}
       />
-    </div>
+      </div>
+    </FeedProvider>
   )
 }
 

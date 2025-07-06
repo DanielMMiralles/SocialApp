@@ -45,52 +45,52 @@
   ✅ Imagen (si existe)
 
 #### Interacciones
-- **Sistema de Likes** ❤️
-  - Contador visible de likes
-  - Toggle like/unlike
-- **Sistema de Comentarios**
-  - Botón para ver/ocultar comentarios
-  - Contador de comentarios
-- **Eliminación de publicaciones**
-  - Solo disponible para el autor
-  - Confirmación antes de eliminar
+✅ **Sistema de Likes** ❤️
+  ✅ Contador visible de likes
+  ✅ Toggle like/unlike
+✅ **Sistema de Comentarios**
+  ✅ Botón para ver/ocultar comentarios
+  ✅ Contador de comentarios
+✅ **Eliminación de publicaciones**
+  ✅ Solo disponible para el autor
+  ✅ Confirmación antes de eliminar
 
 ---
 
 ### 3. 💬 Sistema de Comentarios
 
 #### Añadir Comentarios
-- **Campo de texto** bajo cada publicación
-- **Límite de 200 caracteres**
-- **Botón de envío** con validación
+✅ **Campo de texto** bajo cada publicación
+✅ **Límite de 200 caracteres**
+✅ **Botón de envío** con validación
 
 #### Visualización
-- **Lista expandible** bajo cada publicación
-- **Información mostrada**:
-  - Avatar del comentarista
-  - Nombre de usuario
-  - Contenido del comentario
-  - Timestamp
+✅ **Lista expandible** bajo cada publicación
+✅ **Información mostrada**:
+  ✅ Avatar del comentarista
+  ✅ Nombre de usuario
+  ✅ Contenido del comentario
+  ✅ Timestamp
 
 #### Gestión
-- **Eliminación de comentarios**:
-  - Autor del comentario puede eliminar
-  - Dueño de la publicación puede eliminar cualquier comentario
+✅ **Eliminación de comentarios**:
+  ✅ Autor del comentario puede eliminar
+  ✅ Confirmación antes de eliminar
 
 ---
 
 ### 4. 👥 Relaciones Sociales
 
 #### Sistema de Seguimiento
-- **Botón "Seguir/Dejar de seguir"** en perfiles de usuario
-- **Contadores visibles**:
-  - Número de seguidores
-  - Número de usuarios seguidos
-- **Estados de seguimiento** claramente indicados
+✅ **Botón "Seguir/Dejar de seguir"** en perfiles de usuario
+✅ **Contadores visibles**:
+  ✅ Número de seguidores
+  ✅ Número de usuarios seguidos
+✅ **Estados de seguimiento** claramente indicados
 
 #### Feed Personalizado
-- **Filtro de contenido**: mostrar solo publicaciones de usuarios seguidos
-- **Opción de alternar** entre feed completo y personalizado
+✅ **Filtro de contenido**: mostrar solo publicaciones de usuarios seguidos
+✅ **Opción de alternar** entre feed completo y personalizado
 
 ---
 
@@ -135,10 +135,10 @@
 - **Build Tool**: SWC (Speedy Web Compiler)
 - **Estilos**: Tailwind CSS
 - **Linting**: ESLint
-- **Gestión de Estado**: Context API / Redux (por definir)
+- **Gestión de Estado**: Context API 
 - **Routing**: React Router
-- **Backend**: Por definir (Node.js/Express recomendado)
-- **Base de Datos**: Por definir (MongoDB/PostgreSQL)
+- **Backend**: Node.js
+- **Base de Datos**: Firebase Realtime Database
 
 ---
 

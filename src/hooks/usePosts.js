@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
+import { useFeedFilter } from '../context/FeedContext'
 
 export const usePosts = () => {
   const { user } = useAuth()
+  const { showFollowingOnly } = useFeedFilter()
   const [posts, setPosts] = useState([])
   const [loading, setLoading] = useState(true)
 
@@ -13,7 +15,7 @@ export const usePosts = () => {
       userId: 'user1',
       userDisplayName: 'Ana García',
       userAvatar: '',
-      content: '¡Qué hermoso día para salir a caminar! 🌞 El sol está perfecto y la brisa es increíble. A veces las cosas simples son las que más felicidad nos dan.',
+      content: '¡Qué hermoso día para salir a caminar! 🌞 El sol está perfecto y la brisa es increíble. A veces las cosas simples son las que más felicidad nos dan. #naturaleza #bienestar',
       image: null,
       timestamp: new Date(Date.now() - 5 * 60 * 1000).toISOString(),
       likes: ['user2', 'user3'],
@@ -30,7 +32,7 @@ export const usePosts = () => {
       userId: 'user2',
       userDisplayName: 'Miguel Torres',
       userAvatar: '',
-      content: 'Trabajando en un nuevo proyecto de React. La programación nunca deja de sorprenderme con sus posibilidades infinitas 💻✨',
+      content: 'Trabajando en un nuevo proyecto de #React. La #programación nunca deja de sorprenderme con sus posibilidades infinitas 💻✨ #JavaScript #desarrollo',
       image: null,
       timestamp: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
       likes: ['user1'],
@@ -41,7 +43,7 @@ export const usePosts = () => {
       userId: 'user3',
       userDisplayName: 'Laura Martín',
       userAvatar: '',
-      content: 'Mi café de la mañana ☕ Momento perfecto para reflexionar sobre los objetivos del día. ¿Cuál es su ritual matutino favorito?',
+      content: 'Mi café de la mañana ☕ Momento perfecto para reflexionar sobre los objetivos del día. ¿Cuál es su ritual matutino favorito? #café #mañana #productividad',
       image: null,
       timestamp: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
       likes: ['user1', 'user2', 'user4'],
@@ -60,9 +62,11 @@ export const usePosts = () => {
       const savedPosts = JSON.parse(localStorage.getItem('posts') || '[]')
       const savedLikes = JSON.parse(localStorage.getItem('postLikes') || '{}')
       
+      const savedComments = JSON.parse(localStorage.getItem('postComments') || '{}')
       const allPosts = [...savedPosts, ...samplePosts].map(post => ({
         ...post,
-        likes: savedLikes[post.id] || post.likes || []
+        likes: savedLikes[post.id] || post.likes || [],
+        comments: savedComments[post.id] || post.comments || []
       }))
       
       const sortedPosts = allPosts.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
@@ -93,22 +97,40 @@ export const usePosts = () => {
     ))
   }
 
-  const deletePost = (postId) => {
-    if (window.confirm('¿Estás seguro de que quieres eliminar esta publicación?')) {
+  const deletePost = (postId, onConfirm) => {
+    onConfirm(() => {
       setPosts(prev => prev.filter(post => post.id !== postId))
       
       const savedPosts = JSON.parse(localStorage.getItem('posts') || '[]')
       const updatedSavedPosts = savedPosts.filter(post => post.id !== postId)
       localStorage.setItem('posts', JSON.stringify(updatedSavedPosts))
-    }
+      
+      // Eliminar comentarios asociados
+      const savedComments = JSON.parse(localStorage.getItem('postComments') || '{}')
+      delete savedComments[postId]
+      localStorage.setItem('postComments', JSON.stringify(savedComments))
+    })
   }
 
   useEffect(() => {
     loadPosts()
   }, [])
 
+  const getFilteredPosts = () => {
+    if (!showFollowingOnly) return posts
+    
+    // Obtener lista de usuarios seguidos
+    const following = JSON.parse(localStorage.getItem(`following_${user?.uid}`) || '[]')
+    
+    // Filtrar posts solo de usuarios seguidos (y propios)
+    return posts.filter(post => 
+      post.userId === user?.uid || following.includes(post.userId)
+    )
+  }
+
   return {
-    posts,
+    posts: getFilteredPosts(),
+    allPosts: posts,
     loading,
     addPost,
     toggleLike,

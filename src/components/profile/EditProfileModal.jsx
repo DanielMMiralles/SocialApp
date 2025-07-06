@@ -1,10 +1,13 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useAuth } from '../../context/AuthContext'
 import { updateUserProfile, validateImage } from '../../services/profileService'
 import LoadingScreen from '../ui/LoadingScreen'
+import HashtagText from '../ui/HashtagText'
 
 function EditProfileModal({ isOpen, onClose, profileData, onSave }) {
   const { user } = useAuth()
+  const [isVisible, setIsVisible] = useState(false)
+  const [isAnimating, setIsAnimating] = useState(false)
   const [formData, setFormData] = useState({
     displayName: profileData.displayName || '',
     bio: profileData.bio || '',
@@ -15,6 +18,16 @@ function EditProfileModal({ isOpen, onClose, profileData, onSave }) {
   const [previewImage, setPreviewImage] = useState(profileData.profilePicture || '')
   const [selectedFile, setSelectedFile] = useState(null)
   const [error, setError] = useState('')
+
+  useEffect(() => {
+    if (isOpen) {
+      setIsVisible(true)
+      setTimeout(() => setIsAnimating(true), 10)
+    } else {
+      setIsAnimating(false)
+      setTimeout(() => setIsVisible(false), 300)
+    }
+  }, [isOpen])
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -98,15 +111,19 @@ function EditProfileModal({ isOpen, onClose, profileData, onSave }) {
     }
   }
 
-  if (!isOpen) return null
+  if (!isVisible) return null
 
   if (isLoading) {
     return <LoadingScreen />
   }
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+    <div className={`fixed inset-0 flex items-center justify-center p-4 z-50 transition-all duration-300 ${
+      isAnimating ? 'bg-black/50 backdrop-blur-sm' : 'bg-black/0'
+    }`}>
+      <div className={`bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto transform transition-all duration-300 ${
+        isAnimating ? 'scale-100 opacity-100 translate-y-0' : 'scale-95 opacity-0 translate-y-8'
+      }`}>
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
           <h2 className="text-2xl font-bold text-gray-900">Editar Perfil</h2>
           <button
@@ -179,11 +196,17 @@ function EditProfileModal({ isOpen, onClose, profileData, onSave }) {
               name="bio"
               value={formData.bio}
               onChange={handleChange}
-              placeholder="Cuéntanos sobre ti..."
+              placeholder="Cuéntanos sobre ti... Usa #hashtags para destacar tus intereses"
               rows={4}
               className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white resize-none"
               maxLength={160}
             />
+            {formData.bio && (
+              <div className="mt-2 p-2 bg-gray-50 rounded-lg border border-gray-200">
+                <div className="text-xs text-gray-600 mb-1">Vista previa:</div>
+                <HashtagText text={formData.bio} className="text-sm" />
+              </div>
+            )}
             <div className="text-right text-xs text-gray-500">
               {formData.bio.length}/160
             </div>
