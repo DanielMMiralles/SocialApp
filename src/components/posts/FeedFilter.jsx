@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useFeedFilter } from '../../context/FeedContext'
 
 function FeedFilter() {
-  const { showFollowingOnly, setShowFollowingOnly } = useFeedFilter()
+  const { showFollowingOnly, setShowFollowingOnly, selectedHashtag, setSelectedHashtag } = useFeedFilter()
   const [isChanging, setIsChanging] = useState(false)
 
   const handleToggle = () => {
@@ -17,17 +17,29 @@ function FeedFilter() {
         <div>
           <h3 className="font-semibold text-gray-900 text-sm">Filtrar Feed</h3>
           <p className="text-xs text-gray-600 mt-1">
-            {showFollowingOnly ? 'Solo usuarios seguidos' : 'Todas las publicaciones'}
+            {selectedHashtag ? `Hashtag: #${selectedHashtag}` : 
+             showFollowingOnly ? 'Solo usuarios seguidos' : 'Todas las publicaciones'}
           </p>
         </div>
         
-        <button
-          onClick={handleToggle}
-          disabled={isChanging}
-          className={`relative inline-flex h-6 w-11 items-center rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-            showFollowingOnly ? 'bg-blue-600' : 'bg-gray-300'
-          } ${isChanging ? 'scale-110 shadow-lg' : ''}`}
-        >
+        <div className="flex items-center space-x-2">
+          {selectedHashtag && (
+            <button
+              onClick={() => setSelectedHashtag(null)}
+              className="px-2 py-1 bg-red-100 text-red-600 text-xs rounded-lg hover:bg-red-200 transition-colors"
+              title="Limpiar filtro"
+            >
+              ✕
+            </button>
+          )}
+        </div>
+          <button
+            onClick={handleToggle}
+            disabled={isChanging || selectedHashtag}
+            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+              showFollowingOnly ? 'bg-blue-600' : 'bg-gray-300'
+            } ${isChanging ? 'scale-110 shadow-lg' : ''} ${selectedHashtag ? 'opacity-50 cursor-not-allowed' : ''}`}
+          >
           <span
             className={`inline-block h-4 w-4 transform rounded-full bg-white transition-all duration-200 ${
               showFollowingOnly ? 'translate-x-6' : 'translate-x-1'

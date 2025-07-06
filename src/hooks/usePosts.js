@@ -4,7 +4,7 @@ import { useFeedFilter } from '../context/FeedContext'
 
 export const usePosts = () => {
   const { user } = useAuth()
-  const { showFollowingOnly } = useFeedFilter()
+  const { showFollowingOnly, selectedHashtag } = useFeedFilter()
   const [posts, setPosts] = useState([])
   const [loading, setLoading] = useState(true)
 
@@ -117,15 +117,27 @@ export const usePosts = () => {
   }, [])
 
   const getFilteredPosts = () => {
-    if (!showFollowingOnly) return posts
+    let filteredPosts = posts
     
-    // Obtener lista de usuarios seguidos
-    const following = JSON.parse(localStorage.getItem(`following_${user?.uid}`) || '[]')
+    // Filtrar por hashtag si está seleccionado
+    if (selectedHashtag) {
+      filteredPosts = filteredPosts.filter(post => {
+        const content = post.content || ''
+        const hashtagRegex = /#[\w\u00C0-\u017F]+/g
+        const hashtags = content.match(hashtagRegex) || []
+        return hashtags.some(tag => tag.toLowerCase().includes(selectedHashtag.toLowerCase()))
+      })
+    }
     
-    // Filtrar posts solo de usuarios seguidos (y propios)
-    return posts.filter(post => 
-      post.userId === user?.uid || following.includes(post.userId)
-    )
+    // Filtrar por usuarios seguidos si está activado y no hay hashtag seleccionado
+    if (showFollowingOnly && !selectedHashtag) {
+      const following = JSON.parse(localStorage.getItem(`following_${user?.uid}`) || '[]')
+      filteredPosts = filteredPosts.filter(post => 
+        post.userId === user?.uid || following.includes(post.userId)
+      )
+    }
+    
+    return filteredPosts
   }
 
   return {

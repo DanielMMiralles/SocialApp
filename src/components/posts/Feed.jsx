@@ -5,7 +5,7 @@ import PostCard from './PostCard'
 
 function Feed({ newPosts = [] }) {
   const { posts, loading, addPost, toggleLike, deletePost } = usePosts()
-  const { showFollowingOnly } = useFeedFilter()
+  const { showFollowingOnly, selectedHashtag } = useFeedFilter()
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [displayPosts, setDisplayPosts] = useState(posts)
 
@@ -61,12 +61,13 @@ function Feed({ newPosts = [] }) {
           </svg>
         </div>
         <h3 className="text-xl font-semibold text-gray-900 mb-2">
-          {showFollowingOnly ? 'No hay publicaciones de usuarios seguidos' : 'No hay publicaciones aún'}
+          {selectedHashtag ? `No hay publicaciones con #${selectedHashtag}` :
+           showFollowingOnly ? 'No hay publicaciones de usuarios seguidos' : 'No hay publicaciones aún'}
         </h3>
         <p className="text-gray-600 mb-6">
-          {showFollowingOnly 
-            ? '¡Sigue a otros usuarios para ver sus publicaciones aquí!' 
-            : '¡Sé el primero en compartir algo increíble!'}
+          {selectedHashtag ? '¡Prueba con otro hashtag o crea una publicación con esta etiqueta!' :
+           showFollowingOnly ? '¡Sigue a otros usuarios para ver sus publicaciones aquí!' : 
+           '¡Sé el primero en compartir algo increíble!'}
         </p>
       </div>
     )

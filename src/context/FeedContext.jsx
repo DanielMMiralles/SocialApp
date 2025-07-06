@@ -12,11 +12,14 @@ export const useFeedFilter = () => {
 
 export const FeedProvider = ({ children }) => {
   const [showFollowingOnly, setShowFollowingOnly] = useState(false)
+  const [selectedHashtag, setSelectedHashtag] = useState(null)
 
   return (
     <FeedContext.Provider value={{
       showFollowingOnly,
-      setShowFollowingOnly
+      setShowFollowingOnly,
+      selectedHashtag,
+      setSelectedHashtag
     }}>
       {children}
     </FeedContext.Provider>

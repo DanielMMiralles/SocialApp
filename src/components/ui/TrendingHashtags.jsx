@@ -1,9 +1,19 @@
 import { useHashtags } from '../../hooks/useHashtags'
+import { useFeedFilter } from '../../context/FeedContext'
 import { useEffect, useState } from 'react'
 
 function TrendingHashtags() {
   const { trends, loadTrends } = useHashtags()
+  const { selectedHashtag, setSelectedHashtag } = useFeedFilter()
   const [isPageLoaded, setIsPageLoaded] = useState(false)
+
+  const handleHashtagClick = (hashtag) => {
+    if (selectedHashtag === hashtag) {
+      setSelectedHashtag(null) // Deseleccionar si ya está seleccionado
+    } else {
+      setSelectedHashtag(hashtag)
+    }
+  }
 
   // Detectar cuando la página está completamente cargada
   useEffect(() => {
@@ -74,7 +84,12 @@ function TrendingHashtags() {
         {trends.map((trend, index) => (
           <div 
             key={trend.tag} 
-            className="flex items-center justify-between p-2 hover:bg-gray-50 rounded-lg cursor-pointer transition-colors group"
+            onClick={() => handleHashtagClick(trend.tag)}
+            className={`flex items-center justify-between p-2 rounded-lg cursor-pointer transition-colors group ${
+              selectedHashtag === trend.tag 
+                ? 'bg-blue-50 border border-blue-200' 
+                : 'hover:bg-gray-50'
+            }`}
           >
             <div className="flex items-center space-x-2">
               <div className={`w-2 h-2 rounded-full ${
@@ -83,7 +98,11 @@ function TrendingHashtags() {
                 index === 2 ? 'bg-orange-400' : 'bg-blue-400'
               }`}></div>
               <div>
-                <div className="font-medium text-gray-900 text-sm group-hover:text-blue-600 transition-colors">
+                <div className={`font-medium text-sm transition-colors ${
+                  selectedHashtag === trend.tag 
+                    ? 'text-blue-600' 
+                    : 'text-gray-900 group-hover:text-blue-600'
+                }`}>
                   #{trend.tag}
                 </div>
                 <div className="text-xs text-gray-500">
